@@ -24,16 +24,13 @@ public class AbandonedAlarm extends BroadcastReceiver {
 	Calendar nextAlarm = Calendar.getInstance();
 	
 	public AbandonedAlarm() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		// TODO Auto-generated method stub
-		
 		launchNotification(context, 1);
-		int minutes = randomizeAlarm(3);
-		nextAlarm(context, minutes);
+		//TODO set minimum based upon user iput
+		nextAlarm(context, randomizeAlarm(1)); // randomize based upon the minimum number of seconds before next alarm 
 	}
 	
 	@SuppressLint("Wakelock")
@@ -78,12 +75,12 @@ public class AbandonedAlarm extends BroadcastReceiver {
 
 	}
 	
-	private void nextAlarm(Context context, int minutes){
+	private void nextAlarm(Context context, int seconds){
 		Intent intent = new Intent(context, AbandonedAlarm.class);
 		PendingIntent pending = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		
 		AlarmManager amanager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-		nextAlarm.add(Calendar.SECOND, minutes);
+		nextAlarm.add(Calendar.SECOND, seconds);
 		
 		amanager.set(AlarmManager.RTC_WAKEUP, nextAlarm.getTimeInMillis(), pending);
 		
@@ -91,11 +88,12 @@ public class AbandonedAlarm extends BroadcastReceiver {
 	
 	private int randomizeAlarm(int severity){
 		Random rand = new Random();
-		int levels=10;
+		//TODO set this variable based upon user input
+		int maxSpanOfTime=6000; // the longest that the device will go without alarming.
 		
-		int howSevere = rand.nextInt(levels - severity + 1) + severity;
-		Log.d("Severity Level", ""+howSevere);
-		return howSevere;
+		int countdown = rand.nextInt(maxSpanOfTime - severity + 1) + severity;
+		Log.d("Next Alarm", countdown + " seconds remaining");
+		return countdown;
 	}
 	
 	public static void setPreferences(String key, String value, Context context) {

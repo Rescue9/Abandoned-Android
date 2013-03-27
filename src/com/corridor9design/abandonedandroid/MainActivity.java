@@ -21,6 +21,8 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		checkToggleButtonState();
+		
 		abandonMe();
 	}
 	
@@ -32,12 +34,6 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume(){
 		super.onResume();
-		ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton1);
-
-		if (getPreferences("ToggleState", MainActivity.this).equals("on")){
-			toggleButton.setChecked(true);
-		}
-		
 	}
 
 	@Override
@@ -62,7 +58,6 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				// TODO Auto-generated method stub
 				if (isChecked){
 					
 					firstAlarm.add(Calendar.SECOND, 10); // firstAlarm.add(Calendar.SECOND, Integer.parseInt(getPreferences("firstAlarmSpan", MainActivity.this)));
@@ -94,5 +89,15 @@ public class MainActivity extends Activity {
 		SharedPreferences preferences = PreferenceManager
 			.getDefaultSharedPreferences(context);
 		return preferences.getString(key, "0");
+	}
+	
+	public void checkToggleButtonState(){
+		ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton1);
+
+		if (getPreferences("ToggleState", MainActivity.this).equals("on")){
+			toggleButton.setChecked(true);
+		}
+		
+
 	}
 }
