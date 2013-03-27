@@ -44,21 +44,21 @@ private void abandonMe(){
 			PendingIntent pending = PendingIntent.getBroadcast(MainActivity.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 			
 			AlarmManager amanager = (AlarmManager) getSystemService(ALARM_SERVICE);
-			Calendar startDelay = Calendar.getInstance();
+			Calendar firstAlarm = Calendar.getInstance();
 			
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				// TODO Auto-generated method stub
 				if (isChecked){
 					
-					startDelay.add(Calendar.SECOND, 2);
+					firstAlarm.add(Calendar.SECOND, 20);
 					
-					Log.d("LonelyAndroid Activated",""+startDelay.getTime());
+					Log.d("LonelyAndroid Activated",""+firstAlarm.getTime());
 						
-					amanager.set(AlarmManager.RTC_WAKEUP, startDelay.getTimeInMillis(), pending);
+					amanager.set(AlarmManager.RTC_WAKEUP, firstAlarm.getTimeInMillis(), pending);
 				} else {
 					amanager.cancel(pending);
-					Log.d("LonelyAndroid Deactivated", ""+startDelay.getTime());
+					Log.d("LonelyAndroid Deactivated", ""+firstAlarm.getTime());
 					finish();
 				}
 			}

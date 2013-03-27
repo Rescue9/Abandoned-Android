@@ -1,18 +1,26 @@
 package com.corridor9design.abandonedandroid;
 
+import java.util.Calendar;
+import java.util.Random;
+
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 public class AbandonedAlarm extends BroadcastReceiver {
 
+	Calendar nextAlarm = Calendar.getInstance();
+	
 	public AbandonedAlarm() {
 		// TODO Auto-generated constructor stub
 	}
@@ -22,9 +30,17 @@ public class AbandonedAlarm extends BroadcastReceiver {
 		// TODO Auto-generated method stub
 		
 		launchNotification(context, 1);
+		int minutes = randomizeAlarm(3);
+		nextAlarm(context, minutes);
 	}
 	
+	@SuppressLint("Wakelock")
 	private void launchNotification(Context context, int severity){
+		
+		@SuppressWarnings("deprecation")
+		WakeLock screenOn = ((PowerManager)context.getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "ShowLoneliness");
+		screenOn.acquire();
+		
 		NotificationManager nManager = (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 		
 		NotificationCompat.Builder notification = new NotificationCompat.Builder(context)
@@ -32,9 +48,8 @@ public class AbandonedAlarm extends BroadcastReceiver {
 			.setSmallIcon(R.drawable.ic_launcher)
 			.setTicker("I'm getting lonely here...")
 			.setContentTitle("Abandoned")
-			.setLights(Color.WHITE, 1, 0)
 			.setContentText("Letting you know when I'm neglected...")
-			.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+			.setDefaults(Notification.DEFAULT_ALL);
 		
 		// OPEN APPLICATION ON CLICK
 		// Creates an explicit intent for an Activity in your app
@@ -57,7 +72,28 @@ public class AbandonedAlarm extends BroadcastReceiver {
 		
 		nManager.notify(1232879, notification.build());
 		Log.d("Notification", "Completed");
+		screenOn.release();
 
+	}
+	
+	private void nextAlarm(Context context, int minutes){
+		Intent intent = new Intent(context, AbandonedAlarm.class);
+		PendingIntent pending = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		
+		AlarmManager amanager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+		nextAlarm.add(Calendar.SECOND, minutes);
+		
+		amanager.set(AlarmManager.RTC_WAKEUP, nextAlarm.getTimeInMillis(), pending);
+		
+	}
+	
+	private int randomizeAlarm(int severity){
+		Random rand = new Random();
+		int levels=10;
+		
+		int howSevere = rand.nextInt(levels - severity + 1) + severity;
+		Log.d("Severity Level", ""+howSevere);
+		return howSevere;
 	}
 
 }
