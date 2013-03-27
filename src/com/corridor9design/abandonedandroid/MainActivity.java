@@ -2,17 +2,20 @@ package com.corridor9design.abandonedandroid;
 
 import java.util.Calendar;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
 public class MainActivity extends Activity {
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -25,6 +28,17 @@ public class MainActivity extends Activity {
 	protected void onStop() {
 	    super.onStop();  // Always call the superclass method first
 	}
+	
+	@Override
+	protected void onResume(){
+		super.onResume();
+		ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton1);
+
+		if (getPreferences("ToggleState", MainActivity.this).equals("on")){
+			toggleButton.setChecked(true);
+		}
+		
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -34,10 +48,10 @@ public class MainActivity extends Activity {
 	}
 	
 	
-private void abandonMe(){
+	private void abandonMe(){
 		
 		ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton1);
-		
+
 		toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			
 			Intent intent = new Intent(MainActivity.this, AbandonedAlarm.class);
@@ -51,18 +65,34 @@ private void abandonMe(){
 				// TODO Auto-generated method stub
 				if (isChecked){
 					
-					firstAlarm.add(Calendar.SECOND, 20);
+					firstAlarm.add(Calendar.SECOND, 10); // firstAlarm.add(Calendar.SECOND, Integer.parseInt(getPreferences("firstAlarmSpan", MainActivity.this)));
 					
 					Log.d("LonelyAndroid Activated",""+firstAlarm.getTime());
 						
 					amanager.set(AlarmManager.RTC_WAKEUP, firstAlarm.getTimeInMillis(), pending);
+					
+					setPreferences("ToggleState", "on", MainActivity.this);
 				} else {
 					amanager.cancel(pending);
 					Log.d("LonelyAndroid Deactivated", ""+firstAlarm.getTime());
+					setPreferences("ToggleState", "off", MainActivity.this);
 					finish();
 				}
 			}
 		});
 	}
 
+	public static void setPreferences(String key, String value, Context context) {
+		SharedPreferences preferences = PreferenceManager
+			.getDefaultSharedPreferences(context);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(key, value);
+		editor.commit();
+	}
+
+	public static String getPreferences(String key, Context context) {
+		SharedPreferences preferences = PreferenceManager
+			.getDefaultSharedPreferences(context);
+		return preferences.getString(key, "0");
+	}
 }

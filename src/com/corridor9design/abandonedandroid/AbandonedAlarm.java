@@ -11,8 +11,10 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -94,6 +96,20 @@ public class AbandonedAlarm extends BroadcastReceiver {
 		int howSevere = rand.nextInt(levels - severity + 1) + severity;
 		Log.d("Severity Level", ""+howSevere);
 		return howSevere;
+	}
+	
+	public static void setPreferences(String key, String value, Context context) {
+		SharedPreferences preferences = PreferenceManager
+			.getDefaultSharedPreferences(context);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(key, value);
+		editor.commit();
+	}
+
+	public static String getPreferences(String key, Context context) {
+		SharedPreferences preferences = PreferenceManager
+			.getDefaultSharedPreferences(context);
+		return preferences.getString(key, "0");
 	}
 
 }
