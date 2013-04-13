@@ -21,8 +21,10 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		// check button state to properly display
 		checkToggleButtonState();
 		
+		// main method to start service
 		abandonMe();
 	}
 	
@@ -45,9 +47,11 @@ public class MainActivity extends Activity {
 	
 	
 	private void abandonMe(){
-		
+		// declare & instantiate toggle button object
 		ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton1);
-
+		
+		// give tobbleButton a listener to check for change in state
+		// this new listener will implement the necessary methods if state is changed
 		toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			
 			Intent intent = new Intent(MainActivity.this, AbandonedAlarm.class);
@@ -60,23 +64,28 @@ public class MainActivity extends Activity {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked){
 					
-					firstAlarm.add(Calendar.SECOND, 10); // firstAlarm.add(Calendar.SECOND, Integer.parseInt(getPreferences("firstAlarmSpan", MainActivity.this)));
-					
+					// first alarm will activate 10 seconds after toggleButton
+					// change to let user know of activation. Alarm is activated.
+					firstAlarm.add(Calendar.SECOND, 10); 
 					Log.d("LonelyAndroid Activated",""+firstAlarm.getTime());
-						
 					amanager.set(AlarmManager.RTC_WAKEUP, firstAlarm.getTimeInMillis(), pending);
 					
+					// set the toggleButton preference on so that it will
+					// properly be set on resuming
 					setPreferences("ToggleState", "on", MainActivity.this);
 				} else {
+					// if toggleButton is off, cancel any alarm we've previously set
+					// even if there are none due to first-start
 					amanager.cancel(pending);
 					Log.d("LonelyAndroid Deactivated", ""+firstAlarm.getTime());
 					setPreferences("ToggleState", "off", MainActivity.this);
-					finish();
+					finish(); // exit the program if the button gets turned off
 				}
 			}
 		});
 	}
-
+	
+	// generic method to set the preferences
 	public static void setPreferences(String key, String value, Context context) {
 		SharedPreferences preferences = PreferenceManager
 			.getDefaultSharedPreferences(context);
@@ -84,13 +93,15 @@ public class MainActivity extends Activity {
 		editor.putString(key, value);
 		editor.commit();
 	}
-
+	
+	// generic method to get preferences as needed
 	public static String getPreferences(String key, Context context) {
 		SharedPreferences preferences = PreferenceManager
 			.getDefaultSharedPreferences(context);
 		return preferences.getString(key, "0");
 	}
 	
+	// check the toggleButton state; on or off as listed in the shared preferences
 	public void checkToggleButtonState(){
 		ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton1);
 
