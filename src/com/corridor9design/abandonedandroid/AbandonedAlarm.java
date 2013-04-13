@@ -18,9 +18,10 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
+import android.widget.Toast;
 
 public class AbandonedAlarm extends BroadcastReceiver {
-
+	
 	Calendar nextAlarm = Calendar.getInstance();
 	
 	public AbandonedAlarm() {
@@ -29,12 +30,19 @@ public class AbandonedAlarm extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		launchNotification(context, 1);
-		//TODO set minimum based upon user iput
-		nextAlarm(context, randomizeAlarm(1)); // randomize based upon the minimum number of seconds before next alarm 
+		
+		// get the number of seconds until the next alarm
+		nextAlarm(context, randomizeAlarm(60, 1, 1)); // TODO create interface that allows user to set longestSpan, shortestSpan, and severity
 	}
 	
 	@SuppressLint("Wakelock")
 	private void launchNotification(Context context, int severity){
+		
+		if(MainActivity.getPreferences("isFirstRun", context).equals("yes")){
+			Toast.makeText(context, "Don't forget about me...", Toast.LENGTH_SHORT).show();
+			MainActivity.setPreferences("isFirstRun", "no", context);
+			return;
+		}
 		
 		@SuppressWarnings("deprecation")
 		WakeLock screenOn = ((PowerManager)context.getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "ShowLoneliness");
@@ -69,7 +77,7 @@ public class AbandonedAlarm extends BroadcastReceiver {
 		notification.setContentIntent(resultPendingIntent);
 		
 		
-		nManager.notify(1232879, notification.build());
+		nManager.notify(6810293, notification.build());
 		Log.d("Notification", "Completed");
 		screenOn.release();
 
@@ -86,14 +94,19 @@ public class AbandonedAlarm extends BroadcastReceiver {
 		
 	}
 	
-	private int randomizeAlarm(int severity){
+	private int randomizeAlarm(int longestSpan, int shortestSpan, double severity){
 		Random rand = new Random();
-		//TODO set this variable based upon user input
-		int maxSpanOfTime=6000; // the longest that the device will go without alarming.
+		// longestSpan = the longest length of time the device will go without alarming
+		// shortestSpan = the shortest length of time the device will go before alarming again
+		// severity = Divider that will shorten the longestSpan depending on sliding scale
 		
-		int countdown = rand.nextInt(maxSpanOfTime - severity + 1) + severity;
-		Log.d("Next Alarm", countdown + " seconds remaining");
-		return countdown;
+		int initialLength = rand.nextInt((longestSpan - shortestSpan + 1) + shortestSpan);
+		int finalCountdown = (int) (initialLength / severity);
+		
+		
+		System.out.println(initialLength + "     " + severity);
+		Log.d("Next Alarm", finalCountdown + " seconds remaining");
+		return finalCountdown;
 	}
 	
 	public static void setPreferences(String key, String value, Context context) {
