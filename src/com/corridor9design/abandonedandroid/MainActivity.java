@@ -66,13 +66,16 @@ public class MainActivity extends Activity {
 					
 					// first alarm will activate 10 seconds after toggleButton
 					// change to let user know of activation. Alarm is activated.
-					firstAlarm.add(Calendar.SECOND, 10); 
+					firstAlarm.add(Calendar.SECOND, 1); 
 					Log.d("LonelyAndroid Activated",""+firstAlarm.getTime());
 					amanager.set(AlarmManager.RTC_WAKEUP, firstAlarm.getTimeInMillis(), pending);
 					
 					// set the toggleButton preference on so that it will
 					// properly be set on resuming
 					setPreferences("ToggleState", "on", MainActivity.this);
+					
+					// set isFirstRun for service use
+					setPreferences("isFirstRun", "yes", MainActivity.this);
 				} else {
 					// if toggleButton is off, cancel any alarm we've previously set
 					// even if there are none due to first-start
