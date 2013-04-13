@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -82,6 +83,10 @@ public class MainActivity extends Activity {
 					amanager.cancel(pending);
 					Log.d("LonelyAndroid Deactivated", ""+firstAlarm.getTime());
 					setPreferences("ToggleState", "off", MainActivity.this);
+					
+					// cancel all notifications
+					NotificationManager nManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE); 
+					nManager.cancelAll();
 					finish(); // exit the program if the button gets turned off
 				}
 			}
