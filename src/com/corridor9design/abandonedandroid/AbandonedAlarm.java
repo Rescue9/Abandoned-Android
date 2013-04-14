@@ -29,6 +29,15 @@ public class AbandonedAlarm extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		
+		// reset the alarm if user interacts with device
+		if (intent.getAction()!=null){
+			if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)){
+				nextAlarm(context, randomizeAlarm(30, 1, 1)); // TODO create interface that allows user to set longestSpan, shortestSpan, and severity
+				return;
+			}
+		}
+		
 		launchNotification(context, 1);
 		
 		// get the number of seconds until the next alarm
