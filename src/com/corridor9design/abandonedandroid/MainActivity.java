@@ -1,7 +1,6 @@
 package com.corridor9design.abandonedandroid;
 
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +13,8 @@ import android.widget.ToggleButton;
 public class MainActivity extends Activity {
 	
 	static Intent alarmHandlerIntent;
+	ToggleButton toggleButton;
+	
 	NotificationHandler notifications = new NotificationHandler();
 
 	@Override
@@ -23,10 +24,11 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		// check button state to properly display
+		assignToggleButton();
 		checkToggleButtonState();
 
 		// main method to start service
-		abandonMe();
+		abandonStart();
 	}
 
 	@Override
@@ -46,27 +48,22 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-	private void abandonMe() {
-		// declare & instantiate toggle button object
-		ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton1);
-
-		// give tobbleButton a listener to check for change in state
-		// this new listener will implement the necessary methods if state is
-		// changed
+	private void abandonStart() {
+		// give tobbleButton a listener to check for change in state this
+		// new listener will implement the necessary methods if state is changed
 		toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked) {
-					// set the toggleButton preference on so that it will
-					// properly be set on resuming
+					// set the toggleButton preference on
 					setPreferences("ToggleState", "on", MainActivity.this);
 
 					// set isFirstRun for service use so we only Toast
 					setPreferences("isFirstRun", "yes", MainActivity.this);
 					startAlarmHandler();
 				} else {
-					// set the tobbleButton off for next use
+					// set the toggleButton off for next use
 					setPreferences("ToggleState", "off", MainActivity.this);
 					notifications.cancelNotifications(MainActivity.this);
 					cancelAllAlarms();
@@ -89,11 +86,15 @@ public class MainActivity extends Activity {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		return preferences.getString(key, "0");
 	}
+	
+	public void assignToggleButton(){
+		toggleButton = (ToggleButton) findViewById(R.id.toggleButton1);
+	}
 
 	// check the toggleButton state; on or off as listed in the shared
 	// preferences
 	public void checkToggleButtonState() {
-		ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton1);
+		toggleButton = (ToggleButton) findViewById(R.id.toggleButton1);
 
 		if (getPreferences("ToggleState", MainActivity.this).equals("on")) {
 			toggleButton.setChecked(true);
