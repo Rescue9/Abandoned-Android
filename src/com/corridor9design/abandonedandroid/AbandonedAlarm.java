@@ -20,26 +20,26 @@ public class AbandonedAlarm extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		
+				
 		// reset the alarm if user interacts with device
 		if (intent.getAction()!=null){
 			if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)){
-				//nextAlarm(context, randomizeAlarm(30, 1, 1)); // TODO create interface that allows user to set longestSpan, shortestSpan, and severity
-				
-				context.stopService(MainActivity.alarmHandlerIntent);
+				Log.d("Next Alarm", "CANCELED");
+				// show user activity
+				MainActivity.setPreferences("userActivity", "yes", context);
+				pauseAlarm(context);
 				return;
 			}
 		}
 		
 		notifications.launchNotification(context, 1);
-		
-		// get the number of seconds until the next alarm
 		nextAlarm(context, randomizeAlarm(30, 1, 1)); // TODO create interface that allows user to set longestSpan, shortestSpan, and severity
+
 	}
 	
 	private void nextAlarm(Context context, int seconds){
 		Intent intent = new Intent(context, AbandonedAlarm.class);
-		PendingIntent pending = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pending = PendingIntent.getBroadcast(context, MainActivity.REPEATING_ALARM, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		
 		AlarmManager amanager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 		nextAlarm.add(Calendar.SECOND, seconds);
@@ -47,6 +47,16 @@ public class AbandonedAlarm extends BroadcastReceiver {
 		amanager.set(AlarmManager.RTC_WAKEUP, nextAlarm.getTimeInMillis(), pending);
 		
 	}
+	
+	private void pauseAlarm(Context context){
+		Intent intent = new Intent(context, AbandonedAlarm.class);
+		PendingIntent pending = PendingIntent.getBroadcast(context, MainActivity.REPEATING_ALARM, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		
+		AlarmManager amanager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+
+		amanager.cancel(pending);
+	}
+
 	
 	private int randomizeAlarm(int longestSpan, int shortestSpan, double severity){
 		Random rand = new Random();

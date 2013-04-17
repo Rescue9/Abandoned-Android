@@ -28,7 +28,7 @@ public class AlarmHandler extends Service {
 
 	public void onCreate() {
 		intent  = new Intent(AlarmHandler.this, AbandonedAlarm.class);
-		pending = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+		pending = PendingIntent.getBroadcast(this, MainActivity.ALARM_START, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 		amanager = (AlarmManager) getSystemService(ALARM_SERVICE);
 				
 		startAlarming();

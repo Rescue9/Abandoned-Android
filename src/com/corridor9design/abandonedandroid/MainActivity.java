@@ -12,8 +12,11 @@ import android.widget.ToggleButton;
 
 public class MainActivity extends Activity {
 	
-	static Intent alarmHandlerIntent;
+	Intent alarmHandlerIntent;
 	ToggleButton toggleButton;
+	
+	public static final int ALARM_START = 123;
+	public static final int REPEATING_ALARM = 234;
 	
 	NotificationHandler notifications = new NotificationHandler();
 
@@ -59,8 +62,9 @@ public class MainActivity extends Activity {
 					// set the toggleButton preference on
 					setPreferences("ToggleState", "on", MainActivity.this);
 
-					// set isFirstRun for service use so we only Toast
+					// set isFirstRun & userActivity
 					setPreferences("isFirstRun", "yes", MainActivity.this);
+					setPreferences("userActivity", "yes", MainActivity.this);
 					startAlarmHandler();
 				} else {
 					// set the toggleButton off for next use
