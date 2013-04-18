@@ -20,24 +20,10 @@ public class AbandonedAlarm extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-				
-		// reset the alarm if user interacts with device
-		if (intent.getAction()!=null){
-			if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)){
-				Log.d("Next Alarm", "CANCELED");
-				// show user activity
-				MainActivity.setPreferences("userActivity", "yes", context);
-				pauseAlarm(context);
-				return;
-			}
-		}
-		
 		notifications.launchNotification(context, 1);
-		nextAlarm(context, randomizeAlarm(30, 1, 1)); // TODO create interface that allows user to set longestSpan, shortestSpan, and severity
-
 	}
 	
-	private void nextAlarm(Context context, int seconds){
+	protected void nextAlarm(Context context, int seconds){
 		Intent intent = new Intent(context, AbandonedAlarm.class);
 		PendingIntent pending = PendingIntent.getBroadcast(context, MainActivity.REPEATING_ALARM, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		
@@ -48,7 +34,7 @@ public class AbandonedAlarm extends BroadcastReceiver {
 		
 	}
 	
-	private void pauseAlarm(Context context){
+	protected void pauseAlarm(Context context){
 		Intent intent = new Intent(context, AbandonedAlarm.class);
 		PendingIntent pending = PendingIntent.getBroadcast(context, MainActivity.REPEATING_ALARM, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		
@@ -58,7 +44,7 @@ public class AbandonedAlarm extends BroadcastReceiver {
 	}
 
 	
-	private int randomizeAlarm(int longestSpan, int shortestSpan, double severity){
+	protected int randomizeAlarm(int longestSpan, int shortestSpan, double severity){
 		Random rand = new Random();
 		// longestSpan = the longest length of time the device will go without alarming
 		// shortestSpan = the shortest length of time the device will go before alarming again
