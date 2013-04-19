@@ -15,6 +15,8 @@ public class AbandonedAlarm extends BroadcastReceiver {
 	Calendar nextAlarm = Calendar.getInstance();
 	NotificationHandler notifications = new NotificationHandler();
 	
+	//****** Try declaring the intent, pendingintent, and alarmmanager objects here. then cancel the alarm on every nextAlarm.
+	
 	public AbandonedAlarm() {
 	}
 
