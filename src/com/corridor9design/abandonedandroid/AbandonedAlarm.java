@@ -12,7 +12,6 @@ import android.util.Log;
 
 public class AbandonedAlarm extends BroadcastReceiver {
 	
-	Calendar nextAlarm = Calendar.getInstance();
 	NotificationHandler notifications = new NotificationHandler();
 	
 	//****** Try declaring the intent, pendingintent, and alarmmanager objects here. then cancel the alarm on every nextAlarm.
@@ -22,12 +21,20 @@ public class AbandonedAlarm extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		notifications.launchNotification(context, 1);
+		if (intent.getAction()!=null){
+			System.out.println("GOT HERE");
+			System.out.println(intent.getAction().toString());
+			if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)){
+				notifications.launchNotification(context, 1);
+			}
+		}
 	}
 	
 	protected void nextAlarm(Context context, int seconds){
+		Calendar nextAlarm = Calendar.getInstance();
+
 		Intent intent = new Intent(context, AbandonedAlarm.class);
-		PendingIntent pending = PendingIntent.getBroadcast(context, MainActivity.REPEATING_ALARM, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pending = PendingIntent.getBroadcast(context, MainActivity.REPEATING_ALARM, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 		
 		AlarmManager amanager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 		nextAlarm.add(Calendar.SECOND, seconds);
@@ -38,7 +45,7 @@ public class AbandonedAlarm extends BroadcastReceiver {
 	
 	protected void pauseAlarm(Context context){
 		Intent intent = new Intent(context, AbandonedAlarm.class);
-		PendingIntent pending = PendingIntent.getBroadcast(context, MainActivity.REPEATING_ALARM, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pending = PendingIntent.getBroadcast(context, MainActivity.REPEATING_ALARM, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 		
 		AlarmManager amanager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
