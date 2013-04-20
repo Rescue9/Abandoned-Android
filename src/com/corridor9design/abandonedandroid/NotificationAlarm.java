@@ -22,8 +22,10 @@ public class NotificationAlarm extends AbandonedAlarm {
 			}
 			if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)){
 				Log.d("ScreenOff", "Restarting Alarm");
-				nextAlarm(context, randomizeAlarm(30, 1, 1)); // TODO create interface that allows user to set longestSpan, shortestSpan, and severity
-				
+				nextAlarm(context, randomizeAlarm(Integer.parseInt(MainActivity.getPreferences("maxValue", context)),
+						Integer.parseInt(MainActivity.getPreferences("minValue", context)), 1)); // TODO create interface that allows user to set longestSpan, shortestSpan, and severity
+				System.out.println("Min  " + MainActivity.getPreferences("minValue", context));
+				System.out.println("Max  " + MainActivity.getPreferences("maxValue", context));
 			}
 		}
 	}

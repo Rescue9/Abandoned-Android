@@ -8,12 +8,16 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 public class MainActivity extends Activity {
 	
 	Intent alarmHandlerIntent;
 	ToggleButton toggleButton;
+	
+	TextView minSpanText;
+	TextView maxSpanText;
 	
 	public static final int ALARM_START = 123;
 	public static final int REPEATING_ALARM = 234;
@@ -25,6 +29,9 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		alarmHandlerIntent = new Intent(this, AlarmHandler.class);
 		setContentView(R.layout.activity_main);
+		
+		//setup min & max values
+		setupValues();
 
 		// check button state to properly display
 		assignToggleButton();
@@ -52,6 +59,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void abandonStart() {
+		
 		// give tobbleButton a listener to check for change in state this
 		// new listener will implement the necessary methods if state is changed
 		toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -59,6 +67,8 @@ public class MainActivity extends Activity {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked) {
+					
+					saveMinMaxValues();
 					// set the toggleButton preference on
 					setPreferences("ToggleState", "on", MainActivity.this);
 
@@ -93,6 +103,25 @@ public class MainActivity extends Activity {
 	
 	public void assignToggleButton(){
 		toggleButton = (ToggleButton) findViewById(R.id.toggleButton1);
+	}
+	
+	public void setupValues(){
+		minSpanText = (TextView) findViewById(R.id.minSpanText);
+		maxSpanText = (TextView) findViewById(R.id.maxSpanText);
+		
+		String minPref = getPreferences("minValue", MainActivity.this);
+		String maxPref = getPreferences("maxValue", MainActivity.this);
+		
+		minSpanText.setText(minPref);
+		maxSpanText.setText(maxPref);
+	}
+	
+	public void saveMinMaxValues(){
+		minSpanText = (TextView) findViewById(R.id.minSpanText);
+		maxSpanText = (TextView) findViewById(R.id.maxSpanText);
+
+		setPreferences("minValue", minSpanText.getText().toString(), MainActivity.this);
+		setPreferences("maxValue", maxSpanText.getText().toString(), MainActivity.this);
 	}
 
 	// check the toggleButton state; on or off as listed in the shared

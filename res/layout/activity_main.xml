@@ -15,4 +15,45 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
 
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="57dp"
+        android:layout_toLeftOf="@+id/toggleButton1"
+        android:text="MinSpan" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/toggleButton1"
+        android:layout_marginTop="62dp"
+        android:text="MaxSpan" />
+
+    <EditText
+        android:id="@+id/minSpanText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/toggleButton1"
+        android:layout_alignTop="@+id/textView1"
+        android:layout_marginLeft="18dp"
+        android:ems="10"
+        android:inputType="number" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/maxSpanText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/minSpanText"
+        android:layout_alignTop="@+id/textView2"
+        android:ems="10"
+        android:inputType="number" />
+
 </RelativeLayout>
