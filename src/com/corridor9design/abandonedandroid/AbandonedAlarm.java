@@ -22,11 +22,9 @@ public class AbandonedAlarm extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent.getAction()!=null){
-			System.out.println("GOT HERE");
-			System.out.println(intent.getAction().toString());
-			if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)){
-				notifications.launchNotification(context, 1);
-			}
+			return;
+		}else {
+			notifications.launchNotification(context, 1);
 		}
 	}
 	

@@ -39,6 +39,7 @@ public class AlarmHandler extends Service {
 		screenIntent = new IntentFilter();
 		screenIntent.addAction(Intent.ACTION_SCREEN_OFF);
 		screenIntent.addAction(Intent.ACTION_SCREEN_ON);
+		screenIntent.addAction(Intent.ACTION_USER_PRESENT);
 		screenReceiver = new NotificationAlarm();
 		registerReceiver(screenReceiver, screenIntent);
 		
