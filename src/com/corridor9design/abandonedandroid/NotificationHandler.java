@@ -1,5 +1,6 @@
 package com.corridor9design.abandonedandroid;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -32,8 +33,8 @@ public class NotificationHandler {
 			.setSmallIcon(R.drawable.ic_launcher)
 			.setTicker("I'm getting lonely here...")
 			.setContentTitle("Abandoned")
-			.setContentText("Letting you know when I'm neglected...");
-			//.setDefaults(Notification.DEFAULT_ALL);
+			.setContentText("Letting you know when I'm neglected...")
+			.setDefaults(Notification.DEFAULT_ALL);
 		
 		// OPEN APPLICATION ON CLICK
 		// Creates an explicit alarmHandlerIntent for an Activity in your app
