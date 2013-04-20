@@ -12,11 +12,9 @@ public class NotificationAlarm extends AbandonedAlarm {
 	
 	public void onReceive(Context context, Intent intent){
 		if (intent.getAction()!=null){
-			System.out.println("GOT HERE");
-			System.out.println(intent.getAction().toString());
+			//Log.d("Caught Intent", intent.getAction().toString());
 			if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)){
 				Log.d("Next Alarm", "CANCELED");
-				System.out.println("testing");
 				// show user activity
 				MainActivity.setPreferences("userActivity", "yes", context);
 				pauseAlarm(context);

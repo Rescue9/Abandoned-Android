@@ -13,15 +13,17 @@ import android.util.Log;
 public class AbandonedAlarm extends BroadcastReceiver {
 	
 	NotificationHandler notifications = new NotificationHandler();
-	
-	//****** Try declaring the intent, pendingintent, and alarmmanager objects here. then cancel the alarm on every nextAlarm.
-	
+		
 	public AbandonedAlarm() {
 	}
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent.getAction()!=null){
+			if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)){
+				pauseAlarm(context);
+				return;
+			}
 			return;
 		}else {
 			notifications.launchNotification(context, 1);
